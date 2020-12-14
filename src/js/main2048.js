@@ -24,8 +24,8 @@ $(document).ready(() => {
   newGame();
 
   const container = document.getElementById('grid-container');
-  container.addEventListener('touchstart', onTouchStart, {passive: false});
-  container.addEventListener('touchend', onTouchEnd, {passive: false});
+  container.addEventListener('touchstart', onTouchStart, { passive: false });
+  container.addEventListener('touchend', onTouchEnd, { passive: false });
 });
 
 // 关系：celllSideLength * 4 + cellSpace * 5 = gridContainerWidth
@@ -56,20 +56,20 @@ function newGame() { // 初始化棋盘
 }
 
 function init() {
-  for (var i = 0; i < 4; i++) 
-    for (var j = 0; j < 4; j++) {
-      const gridCell = $(`#grid-cell-${i}-${j}`);
+  for (var i = 0; i < 4; i++) for (var j = 0; j < 4; j++) {
+    const gridCell = $(`#grid-cell-${i}-${j}`);
 
-      gridCell.css('top', getPosTop(i, j));
-      gridCell.css('left', getPosLeft(i, j));
-    }
-  
+    gridCell.css('top', getPosTop(i, j));
+    gridCell.css('left', getPosLeft(i, j));
+  }
+
+
   for (var i = 0; i < 4; i++) {
     board[i] = new Array(); // 一维变二维
     hasConflicted[i] = new Array();
-    for (var j = 0; j < 4; j++) 
-      board[i][j] = 0;
-    
+    for (var j = 0; j < 4; j++) board[i][j] = 0;
+
+
     hasConflicted[i][j] = false;
   }
   // console.log(board, hasConflicted);
@@ -80,30 +80,30 @@ function init() {
 
 function updateBoardView() {
   $('.number-cell').remove();
-  for (let i = 0; i < 4; i++) 
-    for (let j = 0; j < 4; j++) {
-      $('#grid-container').append(`<div class="number-cell" id="number-cell-${i}-${j}"></div>`);
-      const theNumberCell = $(`#number-cell-${i}-${j}`);
-      if (board[i][j] == 0) {
-        theNumberCell.css('width', '0px');
-        theNumberCell.css('height', '0px');
-        theNumberCell.css('top', getPosTop(i, j) + celllSideLength / 2);
-        theNumberCell.css('left', getPosLeft(i, j) + celllSideLength / 2);
-      } else {
-        theNumberCell.css('width', celllSideLength);
-        theNumberCell.css('height', celllSideLength);
-        theNumberCell.css('top', getPosTop(i, j));
-        theNumberCell.css('left', getPosLeft(i, j));
-        theNumberCell.css('background-color', getNumberBackgroundColor(board[i][j]),);
-        const fontSize = getNumberFontSize(board[i][j]);
+  for (let i = 0; i < 4; i++) for (let j = 0; j < 4; j++) {
+    $('#grid-container').append(`<div class="number-cell" id="number-cell-${i}-${j}"></div>`);
+    const theNumberCell = $(`#number-cell-${i}-${j}`);
+    if (board[i][j] == 0) {
+      theNumberCell.css('width', '0px');
+      theNumberCell.css('height', '0px');
+      theNumberCell.css('top', getPosTop(i, j) + celllSideLength / 2);
+      theNumberCell.css('left', getPosLeft(i, j) + celllSideLength / 2);
+    } else {
+      theNumberCell.css('width', celllSideLength);
+      theNumberCell.css('height', celllSideLength);
+      theNumberCell.css('top', getPosTop(i, j));
+      theNumberCell.css('left', getPosLeft(i, j));
+      theNumberCell.css('background-color', getNumberBackgroundColor(board[i][j]));
+      const fontSize = getNumberFontSize(board[i][j]);
 
-        theNumberCell.css('font-size', `${fontSize}px`);
+      theNumberCell.css('font-size', `${fontSize}px`);
 
-        theNumberCell.css('color', getNumberColor(board[i][j]));
-        theNumberCell.text(board[i][j]);
-      } hasConflicted[i][j] = false;
-    }
-  
+      theNumberCell.css('color', getNumberColor(board[i][j]));
+      theNumberCell.text(board[i][j]);
+    } hasConflicted[i][j] = false;
+  }
+
+
   $('.number-cell').css('line-height', `${celllSideLength}px`);
   // $(".number-cell").css("font-size", 0.6 * celllSideLength + "px");
 }
@@ -117,9 +117,8 @@ function generateOneNumber() {
 
   let times = 0;
   while (times < 50) {
-    if (board[randx][randy] == 0) 
-      break;
-    
+    if (board[randx][randy] == 0) break;
+
 
     var randx = parseInt(Math.floor(Math.random() * 4));
     var randy = parseInt(Math.floor(Math.random() * 4));
@@ -194,7 +193,7 @@ function onTouchStart(event) {
 }
 
 function getAngle(angx, angy) {
-  return(Math.atan2(angy, angx) * 180) / Math.PI;
+  return (Math.atan2(angy, angx) * 180) / Math.PI;
 }
 
 function onTouchEnd(event) {
@@ -216,16 +215,15 @@ function onTouchEnd(event) {
     result = 1;
   } else if (angle > 45 && angle < 135) {
     result = 2;
-  } else if ((angle >= 135 && angle<= 180)
-    || (angle> = -180 && angle<-135)
+  } else if ((angle >= 135 && angle <= 180)
+    || (angle >= -180 && angle < -135)
   ) {
     result = 3;
-  } else if (angle> = -45 && angle <= 45) {
+  } else if (angle >= -45 && angle <= 45) {
     result = 4;
   }
-  if (! result) 
-    return;
-  
+  if (! result) return;
+
 
   if (result === 4) { // 右
     if (moveRight()) {
@@ -266,140 +264,132 @@ function moveLeft() {
     return false;
   }
 
-  for (let i = 0; i < 4; i++) 
-    for (let j = 1; j < 4; j++) 
-      if (board[i][j] != 0) {
-        for (let k = 0; k < j; k++) {
-          if (board[i][k] == 0 && noBlockHorizontal(i, k, j, board)) {
-            showMoveAnimation(i, j, i, k);
-            board[i][k] = board[i][j];
-            board[i][j] = 0;
-            continue;
-            // move
-          } else if (board[i][k] == board[i][j] && noBlockHorizontal(i, k, j, board) && ! hasConflicted[i][k]) {
-            // move
-            // add
-            showMoveAnimation(i, j, i, k);
-            board[i][k] += board[i][j];
-            board[i][j] = 0;
+  for (let i = 0; i < 4; i++) for (let j = 1; j < 4; j++) if (board[i][j] != 0) {
+    for (let k = 0; k < j; k++) {
+      if (board[i][k] == 0 && noBlockHorizontal(i, k, j, board)) {
+        showMoveAnimation(i, j, i, k);
+        board[i][k] = board[i][j];
+        board[i][j] = 0;
+        continue;
+        // move
+      } else if (board[i][k] == board[i][j] && noBlockHorizontal(i, k, j, board) && ! hasConflicted[i][k]) {
+        // move
+        // add
+        showMoveAnimation(i, j, i, k);
+        board[i][k] += board[i][j];
+        board[i][j] = 0;
 
-            score += board[i][k];
-            updateScore(score);
+        score += board[i][k];
+        updateScore(score);
 
-            hasConflicted[i][k] = true;
+        hasConflicted[i][k] = true;
 
-            continue;
-          }
-        }
+        continue;
       }
-    
-  
+    }
+  }
+
+
   setTimeout('updateBoardView()', 200);
   return true;
 }
 
 function moveRight() {
-  if (!canMoveRight(board)) 
-    return false;
-  
+  if (!canMoveRight(board)) return false;
+
 
   // moveRight
-  for (let i = 0; i < 4; i++) 
-    for (let j = 2; j >= 0; j--) {
-      if (board[i][j] != 0) {
-        for (let k = 3; k > j; k--) {
-          if (board[i][k] == 0 && noBlockHorizontal(i, j, k, board)) {
-            showMoveAnimation(i, j, i, k);
-            board[i][k] = board[i][j];
-            board[i][j] = 0;
-            continue;
-          } else if (board[i][k] == board[i][j] && noBlockHorizontal(i, j, k, board) && ! hasConflicted[i][k]) {
-            showMoveAnimation(i, j, i, k);
-            board[i][k] *= 2;
-            board[i][j] = 0;
+  for (let i = 0; i < 4; i++) for (let j = 2; j >= 0; j--) {
+    if (board[i][j] != 0) {
+      for (let k = 3; k > j; k--) {
+        if (board[i][k] == 0 && noBlockHorizontal(i, j, k, board)) {
+          showMoveAnimation(i, j, i, k);
+          board[i][k] = board[i][j];
+          board[i][j] = 0;
+          continue;
+        } else if (board[i][k] == board[i][j] && noBlockHorizontal(i, j, k, board) && ! hasConflicted[i][k]) {
+          showMoveAnimation(i, j, i, k);
+          board[i][k] *= 2;
+          board[i][j] = 0;
 
-            score += board[i][k];
-            updateScore(score);
+          score += board[i][k];
+          updateScore(score);
 
-            hasConflicted[i][k] = true;
-            continue;
-          }
+          hasConflicted[i][k] = true;
+          continue;
         }
       }
     }
-  
+  }
+
 
   setTimeout('updateBoardView()', 200);
   return true;
 }
 
 function moveUp() {
-  if (!canMoveUp(board)) 
-    return false;
-  
+  if (!canMoveUp(board)) return false;
+
 
   // moveUp
-  for (let j = 0; j < 4; j++) 
-    for (let i = 1; i < 4; i++) {
-      if (board[i][j] != 0) {
-        for (let k = 0; k < i; k++) {
-          if (board[k][j] == 0 && noBlockVertical(j, k, i, board)) {
-            showMoveAnimation(i, j, k, j);
-            board[k][j] = board[i][j];
-            board[i][j] = 0;
-            continue;
-          } else if (board[k][j] == board[i][j] && noBlockVertical(j, k, i, board) && ! hasConflicted[k][j]) {
-            showMoveAnimation(i, j, k, j);
-            board[k][j] *= 2;
-            board[i][j] = 0;
+  for (let j = 0; j < 4; j++) for (let i = 1; i < 4; i++) {
+    if (board[i][j] != 0) {
+      for (let k = 0; k < i; k++) {
+        if (board[k][j] == 0 && noBlockVertical(j, k, i, board)) {
+          showMoveAnimation(i, j, k, j);
+          board[k][j] = board[i][j];
+          board[i][j] = 0;
+          continue;
+        } else if (board[k][j] == board[i][j] && noBlockVertical(j, k, i, board) && ! hasConflicted[k][j]) {
+          showMoveAnimation(i, j, k, j);
+          board[k][j] *= 2;
+          board[i][j] = 0;
 
-            score += board[k][j];
-            updateScore(score);
+          score += board[k][j];
+          updateScore(score);
 
-            hasConflicted[k][j] = true;
+          hasConflicted[k][j] = true;
 
-            continue;
-          }
+          continue;
         }
       }
     }
-  
+  }
+
 
   setTimeout('updateBoardView()', 200);
   return true;
 }
 
 function moveDown() {
-  if (!canMoveDown(board)) 
-    return false;
-  
+  if (!canMoveDown(board)) return false;
+
 
   // moveDown
-  for (let j = 0; j < 4; j++) 
-    for (let i = 2; i >= 0; i--) {
-      if (board[i][j] != 0) {
-        for (let k = 3; k > i; k--) {
-          if (board[k][j] == 0 && noBlockVertical(j, i, k, board)) {
-            showMoveAnimation(i, j, k, j);
-            board[k][j] = board[i][j];
-            board[i][j] = 0;
-            continue;
-          } else if (board[k][j] == board[i][j] && noBlockVertical(j, i, k, board) && ! hasConflicted[k][j]) {
-            showMoveAnimation(i, j, k, j);
-            board[k][j] *= 2;
-            board[i][j] = 0;
+  for (let j = 0; j < 4; j++) for (let i = 2; i >= 0; i--) {
+    if (board[i][j] != 0) {
+      for (let k = 3; k > i; k--) {
+        if (board[k][j] == 0 && noBlockVertical(j, i, k, board)) {
+          showMoveAnimation(i, j, k, j);
+          board[k][j] = board[i][j];
+          board[i][j] = 0;
+          continue;
+        } else if (board[k][j] == board[i][j] && noBlockVertical(j, i, k, board) && ! hasConflicted[k][j]) {
+          showMoveAnimation(i, j, k, j);
+          board[k][j] *= 2;
+          board[i][j] = 0;
 
-            score += board[k][j];
-            updateScore(score);
+          score += board[k][j];
+          updateScore(score);
 
-            hasConflicted[k][j] = true;
+          hasConflicted[k][j] = true;
 
-            continue;
-          }
+          continue;
         }
       }
     }
-  
+  }
+
 
   setTimeout('updateBoardView()', 200);
   return true;
