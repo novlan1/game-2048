@@ -1,31 +1,31 @@
 // JavaScript Document
-var score = 0;
-var board = new Array();
-var hasConflicted = new Array(); // 保证同一行或同一列只加一次，比如2 2 2 2 => 4 4
+let score = 0;
+const board = new Array();
+const hasConflicted = new Array(); // 保证同一行或同一列只加一次，比如2 2 2 2 => 4 4
 
-var startx = 0;
-var starty = 0;
-var endx = 0;
-var endy = 0;
+let startx = 0;
+let starty = 0;
+let endx = 0;
+let endy = 0;
 
 // window.addEventListener('touchStart', () => {
 // }, { passive: false })
 // document.addEventListener(
-//   "touchmove",
-//   function (e) {
+// "touchmove",
+// function (e) {
 //     e.preventDefault();
-//   },
-//   { passive: false }
+// },
+// { passive: false }
 // );
 
-$(document).ready(function () {
+$(document).ready(() => {
   prepareForMobile();
 
   newGame();
 
-  const container = document.getElementById("grid-container");
-  container.addEventListener("touchstart", onTouchStart, { passive: false });
-  container.addEventListener("touchend", onTouchEnd, { passive: false });
+  const container = document.getElementById('grid-container');
+  container.addEventListener('touchstart', onTouchStart, {passive: false});
+  container.addEventListener('touchend', onTouchEnd, {passive: false});
 });
 
 // 关系：celllSideLength * 4 + cellSpace * 5 = gridContainerWidth
@@ -38,18 +38,17 @@ function prepareForMobile() {
 
   // console.log(gridContainerWidth, cellSpace, celllSideLength);
 
-  $("#grid-container").css("width", gridContainerWidth - 2 * cellSpace);
-  $("#grid-container").css("height", gridContainerWidth - 2 * cellSpace);
-  $("#grid-container").css("padding", cellSpace);
-  $("#grid-container").css("border-radius", 0.02 * gridContainerWidth);
+  $('#grid-container').css('width', gridContainerWidth - 2 * cellSpace);
+  $('#grid-container').css('height', gridContainerWidth - 2 * cellSpace);
+  $('#grid-container').css('padding', cellSpace);
+  $('#grid-container').css('border-radius', 0.02 * gridContainerWidth);
 
-  $(".grid-cell").css("width", celllSideLength);
-  $(".grid-cell").css("height", celllSideLength);
+  $('.grid-cell').css('width', celllSideLength);
+  $('.grid-cell').css('height', celllSideLength);
   // $(".grid-cell").css("border-radius", 0.02 * celllSideLength);
 }
 
-function newGame() {
-  //初始化棋盘
+function newGame() { // 初始化棋盘
   init();
   // 在随机两个格子上生成数字
   generateOneNumber();
@@ -57,17 +56,20 @@ function newGame() {
 }
 
 function init() {
-  for (var i = 0; i < 4; i++)
+  for (var i = 0; i < 4; i++) 
     for (var j = 0; j < 4; j++) {
-      var gridCell = $("#grid-cell-" + i + "-" + j);
+      const gridCell = $(`#grid-cell-${i}-${j}`);
 
-      gridCell.css("top", getPosTop(i, j));
-      gridCell.css("left", getPosLeft(i, j));
+      gridCell.css('top', getPosTop(i, j));
+      gridCell.css('left', getPosLeft(i, j));
     }
+  
   for (var i = 0; i < 4; i++) {
     board[i] = new Array(); // 一维变二维
     hasConflicted[i] = new Array();
-    for (var j = 0; j < 4; j++) board[i][j] = 0;
+    for (var j = 0; j < 4; j++) 
+      board[i][j] = 0;
+    
     hasConflicted[i][j] = false;
   }
   // console.log(board, hasConflicted);
@@ -77,38 +79,32 @@ function init() {
 }
 
 function updateBoardView() {
-  $(".number-cell").remove();
-  for (var i = 0; i < 4; i++)
-    for (var j = 0; j < 4; j++) {
-      $("#grid-container").append(
-        '<div class="number-cell" id="number-cell-' + i + "-" + j + '"></div>'
-      );
-      var theNumberCell = $("#number-cell-" + i + "-" + j);
+  $('.number-cell').remove();
+  for (let i = 0; i < 4; i++) 
+    for (let j = 0; j < 4; j++) {
+      $('#grid-container').append(`<div class="number-cell" id="number-cell-${i}-${j}"></div>`);
+      const theNumberCell = $(`#number-cell-${i}-${j}`);
       if (board[i][j] == 0) {
-        theNumberCell.css("width", "0px");
-        theNumberCell.css("height", "0px");
-        theNumberCell.css("top", getPosTop(i, j) + celllSideLength / 2);
-        theNumberCell.css("left", getPosLeft(i, j) + celllSideLength / 2);
+        theNumberCell.css('width', '0px');
+        theNumberCell.css('height', '0px');
+        theNumberCell.css('top', getPosTop(i, j) + celllSideLength / 2);
+        theNumberCell.css('left', getPosLeft(i, j) + celllSideLength / 2);
       } else {
-        theNumberCell.css("width", celllSideLength);
-        theNumberCell.css("height", celllSideLength);
-        theNumberCell.css("top", getPosTop(i, j));
-        theNumberCell.css("left", getPosLeft(i, j));
-        theNumberCell.css(
-          "background-color",
-          getNumberBackgroundColor(board[i][j])
-        );
+        theNumberCell.css('width', celllSideLength);
+        theNumberCell.css('height', celllSideLength);
+        theNumberCell.css('top', getPosTop(i, j));
+        theNumberCell.css('left', getPosLeft(i, j));
+        theNumberCell.css('background-color', getNumberBackgroundColor(board[i][j]),);
         const fontSize = getNumberFontSize(board[i][j]);
 
-        theNumberCell.css("font-size", fontSize + 'px');
+        theNumberCell.css('font-size', `${fontSize}px`);
 
-        theNumberCell.css("color", getNumberColor(board[i][j]));
+        theNumberCell.css('color', getNumberColor(board[i][j]));
         theNumberCell.text(board[i][j]);
-      }
-
-      hasConflicted[i][j] = false;
+      } hasConflicted[i][j] = false;
     }
-  $(".number-cell").css("line-height", celllSideLength + "px");
+  
+  $('.number-cell').css('line-height', `${celllSideLength}px`);
   // $(".number-cell").css("font-size", 0.6 * celllSideLength + "px");
 }
 function generateOneNumber() {
@@ -119,18 +115,20 @@ function generateOneNumber() {
   var randx = parseInt(Math.floor(Math.random() * 4));
   var randy = parseInt(Math.floor(Math.random() * 4));
 
-  var times = 0;
+  let times = 0;
   while (times < 50) {
-    if (board[randx][randy] == 0) break;
+    if (board[randx][randy] == 0) 
+      break;
+    
 
     var randx = parseInt(Math.floor(Math.random() * 4));
     var randy = parseInt(Math.floor(Math.random() * 4));
 
-    times++;
+    times += 1;
   }
   if (times == 50) {
-    for (var i = 0; i < 4; i++) {
-      for (var j = 0; j < 4; j++) {
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 4; j++) {
         if (board[i][j] == 0) {
           randx = i;
           randy = i;
@@ -140,7 +138,7 @@ function generateOneNumber() {
   }
 
   // 随机一个数字
-  var randNumber = Math.random() < 0.5 ? 2 : 4;
+  const randNumber = Math.random() < 0.5 ? 2 : 4;
 
   // 在随机位置显示随机数字
   board[randx][randy] = randNumber;
@@ -150,39 +148,38 @@ function generateOneNumber() {
 }
 
 // 发生移动，才会产生新的块，比如把数字移动到空位置，或者发生了加和
-$(document).keydown(function (event) {
-  switch (event.keyCode) {
-    // left top right down
+$(document).keydown((event) => {
+  switch (event.keyCode) { // left top right down
     case 37:
       event.preventDefault(); // 阻挡滚动条
 
       if (moveLeft()) {
-        setTimeout("generateOneNumber()", 210);
-        setTimeout("isGameOver()", 300);
+        setTimeout('generateOneNumber()', 210);
+        setTimeout('isGameOver()', 300);
       }
       break;
     case 38:
       event.preventDefault(); // 阻挡滚动条
 
       if (moveUp()) {
-        setTimeout("generateOneNumber()", 210);
-        setTimeout("isGameOver()", 300);
+        setTimeout('generateOneNumber()', 210);
+        setTimeout('isGameOver()', 300);
       }
       break;
     case 39:
       event.preventDefault(); // 阻挡滚动条
 
       if (moveRight()) {
-        setTimeout("generateOneNumber()", 210);
-        setTimeout("isGameOver()", 300);
+        setTimeout('generateOneNumber()', 210);
+        setTimeout('isGameOver()', 300);
       }
       break;
     case 40:
       event.preventDefault(); // 阻挡滚动条
 
       if (moveDown()) {
-        setTimeout("generateOneNumber()", 210);
-        setTimeout("isGameOver()", 300);
+        setTimeout('generateOneNumber()', 210);
+        setTimeout('isGameOver()', 300);
       }
       break;
     default:
@@ -197,7 +194,7 @@ function onTouchStart(event) {
 }
 
 function getAngle(angx, angy) {
-  return (Math.atan2(angy, angx) * 180) / Math.PI;
+  return(Math.atan2(angy, angx) * 180) / Math.PI;
 }
 
 function onTouchEnd(event) {
@@ -205,53 +202,50 @@ function onTouchEnd(event) {
   endx = event.changedTouches[0].pageX;
   endy = event.changedTouches[0].pageY;
 
-  var angx = endx - startx;
-  var angy = endy - starty;
-  var result = 0;
+  const angx = endx - startx;
+  const angy = endy - starty;
+  let result = 0;
 
-  //如果滑动距离太短
+  // 如果滑动距离太短
   if (Math.abs(angx) < 2 && Math.abs(angy) < 2) {
     return;
   }
 
-  var angle = getAngle(angx, angy);
+  const angle = getAngle(angx, angy);
   if (angle >= -135 && angle <= -45) {
     result = 1;
   } else if (angle > 45 && angle < 135) {
     result = 2;
-  } else if (
-    (angle >= 135 && angle <= 180) ||
-    (angle >= -180 && angle < -135)
+  } else if ((angle >= 135 && angle<= 180)
+    || (angle> = -180 && angle<-135)
   ) {
     result = 3;
-  } else if (angle >= -45 && angle <= 45) {
+  } else if (angle> = -45 && angle <= 45) {
     result = 4;
   }
-  if (!result) return;
+  if (! result) 
+    return;
+  
 
-  if (result === 4) {
-    //右
+  if (result === 4) { // 右
     if (moveRight()) {
-      setTimeout("generateOneNumber()", 210);
-      setTimeout("isGameOver()", 300);
+      setTimeout('generateOneNumber()', 210);
+      setTimeout('isGameOver()', 300);
     }
-  } else if (result === 3) {
-    // 左
+  } else if (result === 3) { // 左
     if (moveLeft()) {
-      setTimeout("generateOneNumber()", 210);
-      setTimeout("isGameOver()", 300);
+      setTimeout('generateOneNumber()', 210);
+      setTimeout('isGameOver()', 300);
     }
-  } else if (result === 2) {
-    // 下
+  } else if (result === 2) { // 下
     if (moveDown()) {
-      setTimeout("generateOneNumber()", 210);
-      setTimeout("isGameOver()", 300);
+      setTimeout('generateOneNumber()', 210);
+      setTimeout('isGameOver()', 300);
     }
-  } else {
-    //上
+  } else { // 上
     if (moveUp()) {
-      setTimeout("generateOneNumber()", 210);
-      setTimeout("isGameOver()", 300);
+      setTimeout('generateOneNumber()', 210);
+      setTimeout('isGameOver()', 300);
     }
   }
 }
@@ -263,7 +257,7 @@ function isGameOver() {
 }
 
 function gameOver() {
-  alert("Game Over!");
+  alert('Game Over!');
 }
 
 // 每个数字只会加一次，如2 2 2 2 => 4 4
@@ -272,21 +266,17 @@ function moveLeft() {
     return false;
   }
 
-  for (var i = 0; i < 4; i++)
-    for (var j = 1; j < 4; j++)
+  for (let i = 0; i < 4; i++) 
+    for (let j = 1; j < 4; j++) 
       if (board[i][j] != 0) {
-        for (var k = 0; k < j; k++) {
+        for (let k = 0; k < j; k++) {
           if (board[i][k] == 0 && noBlockHorizontal(i, k, j, board)) {
             showMoveAnimation(i, j, i, k);
             board[i][k] = board[i][j];
             board[i][j] = 0;
             continue;
-            //move
-          } else if (
-            board[i][k] == board[i][j] &&
-            noBlockHorizontal(i, k, j, board) &&
-            !hasConflicted[i][k]
-          ) {
+            // move
+          } else if (board[i][k] == board[i][j] && noBlockHorizontal(i, k, j, board) && ! hasConflicted[i][k]) {
             // move
             // add
             showMoveAnimation(i, j, i, k);
@@ -302,28 +292,28 @@ function moveLeft() {
           }
         }
       }
-  setTimeout("updateBoardView()", 200);
+    
+  
+  setTimeout('updateBoardView()', 200);
   return true;
 }
 
 function moveRight() {
-  if (!canMoveRight(board)) return false;
+  if (!canMoveRight(board)) 
+    return false;
+  
 
-  //moveRight
-  for (var i = 0; i < 4; i++)
-    for (var j = 2; j >= 0; j--) {
+  // moveRight
+  for (let i = 0; i < 4; i++) 
+    for (let j = 2; j >= 0; j--) {
       if (board[i][j] != 0) {
-        for (var k = 3; k > j; k--) {
+        for (let k = 3; k > j; k--) {
           if (board[i][k] == 0 && noBlockHorizontal(i, j, k, board)) {
             showMoveAnimation(i, j, i, k);
             board[i][k] = board[i][j];
             board[i][j] = 0;
             continue;
-          } else if (
-            board[i][k] == board[i][j] &&
-            noBlockHorizontal(i, j, k, board) &&
-            !hasConflicted[i][k]
-          ) {
+          } else if (board[i][k] == board[i][j] && noBlockHorizontal(i, j, k, board) && ! hasConflicted[i][k]) {
             showMoveAnimation(i, j, i, k);
             board[i][k] *= 2;
             board[i][j] = 0;
@@ -337,29 +327,28 @@ function moveRight() {
         }
       }
     }
+  
 
-  setTimeout("updateBoardView()", 200);
+  setTimeout('updateBoardView()', 200);
   return true;
 }
 
 function moveUp() {
-  if (!canMoveUp(board)) return false;
+  if (!canMoveUp(board)) 
+    return false;
+  
 
-  //moveUp
-  for (var j = 0; j < 4; j++)
-    for (var i = 1; i < 4; i++) {
+  // moveUp
+  for (let j = 0; j < 4; j++) 
+    for (let i = 1; i < 4; i++) {
       if (board[i][j] != 0) {
-        for (var k = 0; k < i; k++) {
+        for (let k = 0; k < i; k++) {
           if (board[k][j] == 0 && noBlockVertical(j, k, i, board)) {
             showMoveAnimation(i, j, k, j);
             board[k][j] = board[i][j];
             board[i][j] = 0;
             continue;
-          } else if (
-            board[k][j] == board[i][j] &&
-            noBlockVertical(j, k, i, board) &&
-            !hasConflicted[k][j]
-          ) {
+          } else if (board[k][j] == board[i][j] && noBlockVertical(j, k, i, board) && ! hasConflicted[k][j]) {
             showMoveAnimation(i, j, k, j);
             board[k][j] *= 2;
             board[i][j] = 0;
@@ -374,29 +363,28 @@ function moveUp() {
         }
       }
     }
+  
 
-  setTimeout("updateBoardView()", 200);
+  setTimeout('updateBoardView()', 200);
   return true;
 }
 
 function moveDown() {
-  if (!canMoveDown(board)) return false;
+  if (!canMoveDown(board)) 
+    return false;
+  
 
-  //moveDown
-  for (var j = 0; j < 4; j++)
-    for (var i = 2; i >= 0; i--) {
+  // moveDown
+  for (let j = 0; j < 4; j++) 
+    for (let i = 2; i >= 0; i--) {
       if (board[i][j] != 0) {
-        for (var k = 3; k > i; k--) {
+        for (let k = 3; k > i; k--) {
           if (board[k][j] == 0 && noBlockVertical(j, i, k, board)) {
             showMoveAnimation(i, j, k, j);
             board[k][j] = board[i][j];
             board[i][j] = 0;
             continue;
-          } else if (
-            board[k][j] == board[i][j] &&
-            noBlockVertical(j, i, k, board) &&
-            !hasConflicted[k][j]
-          ) {
+          } else if (board[k][j] == board[i][j] && noBlockVertical(j, i, k, board) && ! hasConflicted[k][j]) {
             showMoveAnimation(i, j, k, j);
             board[k][j] *= 2;
             board[i][j] = 0;
@@ -411,7 +399,8 @@ function moveDown() {
         }
       }
     }
+  
 
-  setTimeout("updateBoardView()", 200);
+  setTimeout('updateBoardView()', 200);
   return true;
 }
